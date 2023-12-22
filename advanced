@@ -1,0 +1,91 @@
+#!/bin/bash
+
+while [[ $# -gt 0 ]]
+do
+key = "$1"
+
+case $key in
+cpu)
+COMMAND = "lscpu"
+shift
+;;
+memory)
+COMMAND = "free"
+shift
+;;
+user)
+COMMAND = "user"
+ACTION = "$2"
+ARGUMENT = "$3"
+shift
+shift
+shift
+;;
+file)
+COMMAND = "file"
+ACTION = "$2"
+ARGUMENT = "$3"
+OPTIONS = "$4"
+shift
+shift
+shift
+shift
+;;
+--help)
+COMMAND = "help"
+shift
+;;
+--version)
+echo "v0.1.0"
+exit 0
+;;
+*)
+
+shift
+;;
+esac
+done
+
+if [[ $COMMAND == "lscpu" ]]; then
+lscpu
+
+elif [[ $COMMAND == "free" ]]; then
+free -h
+
+elif [[ $COMMAND == "user" ]]; then
+if [[ $ACTION == "create" ]]; then
+sudo useradd -m $ARGUMENT
+echo "User $ARGUMENT created."
+
+elif [[ $ACTION == "list" ]]; then
+if [[ $ARGUMENT == "--sudo-only" ]]; then
+grep '^sudo:. *$' /etc/group | cut -d: f4
+else
+cut -d: -f1 /etc/passwd
+fi
+fi
+
+elif [[ $COMMAND == "file" ]]; then
+if [[ $ACTION == "getinfo" ]]; then
+if [[ $OPTIONS == "--size" ]]; then
+stat -c%s "$ARGUMENT"
+elif [[ $OPTIONS == "--permissions" ]]; then
+stat -c%A "$ARGUMENT" 
+elif [[ $OPTIONS == "--owner" ]]; then
+stat -c%U "$ARGUMENT"
+elif [[ $OPTIONS == "--last-modified" ]]; then
+stat -c%y "$ARGUMENT"
+else
+stat "$ARGUMENT"
+fi
+fi
+elif [[ $COMMAND == "help" ]]; then
+echo "Help message"
+fi
+
+
+
+
+
+
+

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+while [[ $# -gt 0  ]]
+do
+key = "$1"
+
+case $key in
+cpu)
+COMMAND = "lscpu"
+shift
+;;
+memory)
+COMMAND = "free"
+shift
+;;
+--help)
+COMMAND = "help"
+shift
+;;
+--version)
+echo "v0.1.0"
+exit 0
+;;
+*)
+shift
+;;
+esac
+done
+
+if [[ $COMMAND == "lscpu" ]]; then
+lscpu
+elif [[ $COMMAND == "free"  ]]; then
+free -h
+elif [[ $COMMAND == "help" ]]; then
+echo "Help message"
+fi
